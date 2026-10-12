@@ -1,0 +1,15 @@
+# Private strategy/docs — do NOT publish to the public repo
+MONEY-PLAN.md
+PLAN.md
+PROMOTION.md
+FEATURES.md
+docs/
+
+# Secrets
+key
+*.key
+secrets.*
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

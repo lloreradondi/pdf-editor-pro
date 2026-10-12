@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="description" content="Free online PDF editor. Open, edit, annotate, sign, reorder and download PDFs — 100% in your browser. Your files never leave your device." />
+  <title>PDF Editor Pro — Free, Private, In-Browser PDF Editor (POC)</title>
+
+  <!-- PDF libraries (CDN, no build). pdf.js = view, pdf-lib = edit/save. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__logo">📄</span>
+      <span class="brand__name">PDF&nbsp;Editor <b>Pro</b></span>
+      <span class="badge badge--poc">POC</span>
+    </div>
+    <div class="topbar__actions">
+      <span id="proStatus" class="pro-status is-hidden">★ Pro</span>
+      <button id="getProBtn" class="btn btn--pro">Get Pro — $9</button>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <div id="toolbar" class="toolbar is-hidden">
+    <div class="toolbar__group">
+      <button class="btn btn--ghost" id="openBtn2">Open</button>
+      <span class="toolbar__sep"></span>
+      <button class="tool" data-tool="select" title="Select / move (V)">🖱️ Select</button>
+      <button class="tool" data-tool="text" title="Add text (T)">🔤 Text</button>
+      <button class="tool" data-tool="highlight" title="Highlight (H)">🖍️ Highlight</button>
+      <button class="tool" data-tool="signature" title="Signature (S)">✍️ Sign</button>
+    </div>
+    <div class="toolbar__group">
+      <label class="field">Color
+        <input type="color" id="colorPicker" value="#e11d48" />
+      </label>
+      <label class="field">Size
+        <input type="number" id="sizePicker" value="16" min="6" max="96" />pt
+      </label>
+    </div>
+    <div class="toolbar__group">
+      <button class="btn btn--ghost" id="undoBtn" title="Undo (Ctrl+Z)">↶ Undo</button>
+      <button class="btn btn--ghost" id="redoBtn" title="Redo (Ctrl+Y)">↷ Redo</button>
+    </div>
+    <div class="toolbar__group toolbar__group--right">
+      <button class="btn btn--ghost" id="zoomOut">−</button>
+      <span id="zoomLabel" class="zoom-label">100%</span>
+      <button class="btn btn--ghost" id="zoomIn">+</button>
+      <span class="toolbar__sep"></span>
+      <button class="btn btn--primary" id="downloadBtn">⬇ Download PDF</button>
+    </div>
+  </div>
+
+  <main class="layout">
+    <!-- Thumbnails / page organizer -->
+    <aside id="sidebar" class="sidebar is-hidden">
+      <div class="sidebar__head">Pages</div>
+      <div id="thumbs" class="thumbs"></div>
+    </aside>
+
+    <!-- Viewer / editor canvas -->
+    <section class="stage">
+      <!-- Drop zone (shown before a file is open) -->
+      <div id="dropzone" class="dropzone">
+        <div class="dropzone__inner">
+          <div class="dropzone__icon">📄⬆️</div>
+          <h1>Drop a PDF here to start</h1>
+          <p>or</p>
+          <button class="btn btn--primary btn--lg" id="openBtn">Open PDF</button>
+          <input type="file" id="fileInput" accept="application/pdf" hidden />
+          <p class="dropzone__note">🔒 100% private — your file is processed in your browser and never uploaded.</p>
+        </div>
+      </div>
+
+      <!-- Page + overlay render target -->
+      <div id="pageWrap" class="page-wrap is-hidden">
+        <div id="pageStack" class="page-stack"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Signature modal -->
+  <div id="sigModal" class="modal is-hidden" role="dialog" aria-modal="true">
+    <div class="modal__box">
+      <h2>Draw your signature</h2>
+      <canvas id="sigPad" width="440" height="180" class="sigpad"></canvas>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" id="sigClear">Clear</button>
+        <div style="flex:1"></div>
+        <button class="btn btn--ghost" id="sigCancel">Cancel</button>
+        <button class="btn btn--primary" id="sigUse">Use signature</button>
+      </div>
+      <p class="modal__note">Then click on the page to place it.</p>
+    </div>
+  </div>
+
+  <!-- Get Pro modal -->
+  <div id="proModal" class="modal is-hidden" role="dialog" aria-modal="true">
+    <div class="modal__box">
+      <h2>Upgrade to Pro — <span id="proPrice">$9</span> one-time</h2>
+      <p>Pro removes the export watermark and unlocks merge/split, security, batch convert, OCR and more.</p>
+      <a id="buyLink" class="btn btn--pro btn--lg" href="#" target="_blank" rel="noopener">Buy Pro on Gumroad</a>
+      <div class="modal__divider">Already bought? Paste your license key:</div>
+      <div class="license-row">
+        <input type="text" id="licenseInput" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" />
+        <button class="btn btn--primary" id="activateBtn">Activate</button>
+      </div>
+      <p id="licenseMsg" class="license-msg"></p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" id="proClose">Close</button>
+        <div style="flex:1"></div>
+        <button class="btn btn--ghost is-hidden" id="deactivateBtn">Remove Pro from this browser</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast is-hidden"></div>
+
+  <footer class="footer">
+    <p><b>PDF Editor Pro</b> — free & private. Files never leave your device. This is a POC; see the docs for the full plan.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
